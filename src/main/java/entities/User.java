@@ -3,15 +3,20 @@ package entities;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
+import java.nio.charset.Charset;
+import java.util.Random;
+import java.util.UUID;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 @Entity
 @XmlRootElement
-//@NamedQueries({
-//        @NamedQuery(name = "findUserById", query = "SELECT u FROM User u WHERE u.email = :email")
-//})
+
 @NamedQueries({
-        @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u")
+        @NamedQuery(name = "User.findAll", query = "SELECT u FROM User u"),
+        @NamedQuery(name = "User.findByEmail", query = "SELECT u FROM User u WHERE u.email = :email"),
+
 })
 @Table(name = "User_")
 public class User implements Serializable {
@@ -33,6 +38,9 @@ public class User implements Serializable {
     @Column(name="password", nullable=false, length=64)
     private String password;
 
+    @Column(name="authToken", unique = true)
+    private String authToken;
+
     public long getId() {
         return id;
     }
@@ -41,16 +49,6 @@ public class User implements Serializable {
         this.id = id;
     }
 
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", email='" + email + '\'' +
-                ", name='" + name + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", password='" + password + '\'' +
-                '}';
-    }
 
     public User() {
 
@@ -61,6 +59,11 @@ public class User implements Serializable {
         this.lastName = lastName;
         this.password = password;
         this.email = email;
+        this.authToken = null;
+    }
+
+    public static String reallyBadTokenGen() {
+        return UUID.randomUUID().toString();
     }
 
     public void setName(String name) {
@@ -95,4 +98,23 @@ public class User implements Serializable {
         return email;
     }
 
+    public String getAuthToken() {
+        return authToken;
+    }
+
+    public void setAuthToken(String authToken) {
+        this.authToken = authToken;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", email='" + email + '\'' +
+                ", name='" + name + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", password='" + password + '\'' +
+                ", authToken='" + authToken + '\'' +
+                '}';
+    }
 }

@@ -1,40 +1,47 @@
 package services;
 
 import dao.UserDao;
+import ejb.UserEJB;
 import entities.User;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Application;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import com.google.common.collect.Iterables;
 
 
 @Path("")
-@Stateless
+@ApplicationScoped
+@Transactional
 public class RestService extends Application {
 
     @Inject
     private UserDao userDao;
 
+    @Inject
+    private UserEJB userEJB;
+
     @POST
-    @Path("/user/createuser")
+    @Path("/user/login")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response createUser(@HeaderParam("f_name") String fName,
-                               @HeaderParam("l_name") String lName,
-                               @HeaderParam("pwd") String pwd,
-                               @HeaderParam("email") String email) {
-        User u = new User();
-        u.setName(fName);
-        u.setLastName(lName);
-        u.setPassword(pwd);
-        u.setEmail(email);
+    public String login(@HeaderParam("email") String email, @HeaderParam("pwd") String pwd) {
+//        User u = new User();
+//        u.setPassword(pwd);
+//        u.setEmail(email);
+//        userDao.edit(u);
+        String token = userEJB.checkPwd(email, pwd);
+        return userEJB.checkPwd(email, pwd);
+    }
 
-        userDao.persist(u);
-        return Response.ok(Iterables.getLast(userDao.findAll())).build();
+    @POST
+    @Path("controller")
+    @Produces("application/json")
+    public boolean verifyToken(@HeaderParam("email") String email, @HeaderParam("token") String token) {
+        return userEJB.verifyToken(email, token);
     }
 
     @GET
@@ -52,6 +59,5 @@ public class RestService extends Application {
 
         return Response.ok(userDao.find(id)).build();
     }
-
 }
 

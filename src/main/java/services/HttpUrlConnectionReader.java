@@ -7,12 +7,12 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 
 
-public class JavaHttpUrlConnectionReader {
+public class HttpUrlConnectionReader {
     public static void main(String[] args) throws Exception {
-        new JavaHttpUrlConnectionReader();
+        new HttpUrlConnectionReader();
     }
 
-    public JavaHttpUrlConnectionReader() {
+    public HttpUrlConnectionReader() {
         try {
             String myUrl = "http://localhost:8080/all";
 
