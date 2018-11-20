@@ -3,11 +3,8 @@ package entities;
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlRootElement;
 import java.io.Serializable;
-import java.nio.charset.Charset;
-import java.util.Random;
 import java.util.UUID;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 
 @Entity

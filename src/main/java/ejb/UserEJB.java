@@ -39,7 +39,7 @@ public class UserEJB extends AbstractDao<User> {
     }
 
 
-    public String checkPwd(String email, String pwd){
+    public String verifyLogin(String email, String pwd){
         User user = em.createNamedQuery("User.findByEmail", User.class).setParameter("email", email).getSingleResult();
         if (user.getPassword().equals(pwd)){
             user.setAuthToken(User.reallyBadTokenGen());
@@ -55,6 +55,25 @@ public class UserEJB extends AbstractDao<User> {
 
         return user.getAuthToken();
     }
+
+    public boolean endSession(String email, String token){
+        User user = new User();
+        try {
+            user = em.createNamedQuery("User.findByEmail", User.class).setParameter("email", email).getSingleResult();
+            if (verifyToken(email, token)){
+                user.setAuthToken(null);
+                    userDao.edit(user);
+                    return true;
+                }
+        }catch (Exception e){
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, user.toString(), e);
+            e.printStackTrace();
+        }
+
+        //TODO: else
+        return false;
+    }
+
 
     public boolean verifyToken(String email, String token){
         User user = em.createNamedQuery("User.findByEmail", User.class).setParameter("email", email).getSingleResult();

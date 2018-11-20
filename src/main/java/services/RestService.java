@@ -29,12 +29,15 @@ public class RestService extends Application {
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public String login(@HeaderParam("email") String email, @HeaderParam("pwd") String pwd) {
-//        User u = new User();
-//        u.setPassword(pwd);
-//        u.setEmail(email);
-//        userDao.edit(u);
-        String token = userEJB.checkPwd(email, pwd);
-        return userEJB.checkPwd(email, pwd);
+        return userEJB.verifyLogin(email, pwd);
+    }
+
+    @POST
+    @Path("/user/logout")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public boolean logout(@HeaderParam("email") String email, @HeaderParam("token") String token){
+        return userEJB.endSession(email, token);
     }
 
     @POST
@@ -42,6 +45,21 @@ public class RestService extends Application {
     @Produces("application/json")
     public boolean verifyToken(@HeaderParam("email") String email, @HeaderParam("token") String token) {
         return userEJB.verifyToken(email, token);
+    }
+
+    @POST
+    @Path("/user/createuser")
+    @Produces(MediaType.APPLICATION_JSON)
+    @Consumes(MediaType.APPLICATION_JSON)
+    public User createUser(@HeaderParam("fName") String fName,
+                               @HeaderParam("lName") String lName,
+                               @HeaderParam("pwd") String pwd,
+                               @HeaderParam("email") String email) {
+
+        User user = new User(fName, lName, pwd, email);
+
+        userDao.persist(user);
+        return user;
     }
 
     @GET
