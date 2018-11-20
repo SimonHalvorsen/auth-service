@@ -9,6 +9,8 @@ import utils.AuthenticationUtils;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.persistence.TypedQuery;
+import java.io.UnsupportedEncodingException;
+import java.security.NoSuchAlgorithmException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -41,15 +43,19 @@ public class UserEJB extends AbstractDao<User> {
 
     public String verifyLogin(String email, String pwd){
         User user = em.createNamedQuery("User.findByEmail", User.class).setParameter("email", email).getSingleResult();
-        if (user.getPassword().equals(pwd)){
-            user.setAuthToken(User.reallyBadTokenGen());
-            try {
-                userDao.edit(user);
+        try {
+            if (user.getPassword().equals(AuthenticationUtils.encodeSHA256(pwd))){
+                user.setAuthToken(User.reallyBadTokenGen());
+                try {
+                    userDao.edit(user);
 
-            }catch (Exception e){
-                Logger.getLogger(getClass().getName()).log(Level.SEVERE, user.toString(), e);
-                e.printStackTrace();
+                }catch (Exception e){
+                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, user.toString(), e);
+                    e.printStackTrace();
+                }
             }
+        } catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
+            e.printStackTrace();
         }
         //TODO: else
 

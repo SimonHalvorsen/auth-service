@@ -58,8 +58,8 @@ public class RestService extends Application {
 
         User user = new User(fName, lName, pwd, email);
 
-        userDao.persist(user);
-        return user;
+        return userEJB.createUser(user);
+
     }
 
     @GET
