@@ -25,7 +25,7 @@ public class RestService extends Application {
     private UserEJB userEJB;
 
     @POST
-    @Path("/user/login")
+    @Path("/login")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public String login(@HeaderParam("email") String email, @HeaderParam("pwd") String pwd) {
@@ -33,7 +33,7 @@ public class RestService extends Application {
     }
 
     @POST
-    @Path("/user/logout")
+    @Path("/logout")
     @Produces(MediaType.APPLICATION_JSON)
     @Consumes(MediaType.APPLICATION_JSON)
     public boolean logout(@HeaderParam("email") String email, @HeaderParam("token") String token){
@@ -41,7 +41,7 @@ public class RestService extends Application {
     }
 
     @POST
-    @Path("controller")
+    @Path("/verify")
     @Produces("application/json")
     public boolean verifyToken(@HeaderParam("email") String email, @HeaderParam("token") String token) {
         return userEJB.verifyToken(email, token);

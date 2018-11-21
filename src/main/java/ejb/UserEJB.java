@@ -35,7 +35,7 @@ public class UserEJB extends AbstractDao<User> {
         group.setEmail(user.getEmail());
         group.setGroupname(Group.USERS_GROUP);
         em.persist(user);
-        //em.persist(group);
+        em.persist(group);
 
         return user;
     }
@@ -46,18 +46,11 @@ public class UserEJB extends AbstractDao<User> {
         try {
             if (user.getPassword().equals(AuthenticationUtils.encodeSHA256(pwd))){
                 user.setAuthToken(User.reallyBadTokenGen());
-                try {
-                    userDao.edit(user);
-
-                }catch (Exception e){
-                    Logger.getLogger(getClass().getName()).log(Level.SEVERE, user.toString(), e);
-                    e.printStackTrace();
-                }
+                userDao.edit(user);
             }
         } catch (UnsupportedEncodingException | NoSuchAlgorithmException e) {
             e.printStackTrace();
         }
-        //TODO: else
 
         return user.getAuthToken();
     }
@@ -76,7 +69,6 @@ public class UserEJB extends AbstractDao<User> {
             e.printStackTrace();
         }
 
-        //TODO: else
         return false;
     }
 
