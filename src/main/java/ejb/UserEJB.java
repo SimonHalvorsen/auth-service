@@ -75,8 +75,11 @@ public class UserEJB extends AbstractDao<User> {
 
     public boolean verifyToken(String email, String token){
         User user = em.createNamedQuery("User.findByEmail", User.class).setParameter("email", email).getSingleResult();
-        Logger.getLogger(getClass().getName()).log(Level.SEVERE, user.toString(), new Exception());
-        return user.getAuthToken().equals(token);
+//        Logger.getLogger(getClass().getName()).log(Level.SEVERE, user.toString(), new Exception());
+        if (user.getAuthToken() != null)
+            return user.getAuthToken().equals(token);
+        else
+            return false;
     }
 
     public User findByEmail (String id) {
