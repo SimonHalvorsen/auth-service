@@ -59,7 +59,6 @@ public class RestService extends Application {
         User user = new User(fName, lName, pwd, email);
 
         return userEJB.createUser(user);
-
     }
 
     @GET
